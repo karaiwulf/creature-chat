@@ -180,6 +180,7 @@ public class ChatGPTRequest {
                 int remainingContextTokens = (int) ((maxContextTokens - maxOutputTokens) * percentOfContext);
                 int usedTokens = estimateTokenSize("system: " + systemMessage);
 
+				String lastSender = new String("");
                 // Iterate backwards through the message history
                 for (int i = messageHistory.size() - 1; i >= 0; i--) {
                     ChatMessage chatMessage = messageHistory.get(i);
@@ -192,8 +193,11 @@ public class ChatGPTRequest {
                     }
 
                     // Add the message to the temporary list
-                    messages.add(new ChatGPTRequestMessage(senderName, messageText));
-                    usedTokens += messageTokens;
+					if (senderName == lastSender) {
+                    	messages.add(new ChatGPTRequestMessage(senderName, messageText));
+                    	usedTokens += messageTokens;
+						lastSender = new String(senderName);
+					}
                 }
 
                 // Add system message
